@@ -1,0 +1,229 @@
+笔记STL
+常用容器头文件列表
+#include<algorithm> //算法
+#include<string> //字符串
+#include<vector> //动态数组
+#include<list>		//链表
+#include<queue>		//队列、优先队列
+#include<stack>		//栈
+#include<deque>		//双向队列
+#include<map>		//映射
+#include<set>		//集合
+#include<unordered_map>		//c++11开始支持
+#include<unordered_set>
+容器都有的成员函数
+size() // 大小，o(1)
+empty()	//若空，返回true, O(1)
+begin() //返回指向第一个的迭代器
+end()	//返回指向末尾的迭代器，是内容最后的一个再往后一个，是非法越界的位置
+erase()	// 删除
+insert()//插入
+clear()	//清空，栈和队列没有，需要一个一个删除 O(1)
+迭代器 iterator
+可以理解为指针，是用来遍历容器内的元素的
+每种容器类型都定义了自己的迭代器类型
+string, vector, 和deque 提供了随机访问迭代器；
+list, set, multiset, map, multimap 提供了双向迭代器；
+在使用迭代器涉及到插入删除等引起空间变化的操作时, 尽量要重新获取一下迭代器, 防止出现越界或者野指针的问题, 导致程序崩溃
+以vector示例：
+vector<int>:: iterator it; 	//声明一个vector<int>类型的迭代器 
+for( it = v1.begin(); it != v1.end(); it++ ) 	
+	cout << *it << endl;  // 遍历动态数组V1
+vector<int>::reverse_iterator rit;
+for( rit = v1.begin(); rit != v1.end(); rit++ )  	
+	cout<< *rit <<endl;	// 反向遍历动态数组V1，最好不要用
+//注意：由于vector是连续存储空间来存储元素的，因而也可以用下标直接访问元素，见详解1
+常用容器详解
+1_vector 可变长度数组（动态数组）
+插入和删除， O(n)，因为删除或者插入需要移动元素，效率低；同普通数组；
+使用多的是在末尾插入或删除
+采用连续存储空间来存储元素。也就是意味着可以采用下标对vector的元素进行访问，即可以用 [ ] 操作
+//vector成员函数示例
+vector<int>v1; //构造1：新创建的为空的
+if(v1.empty())	printf("true\n");
+else printf("false\n");
+vector<int> v3(10, 1); //构造2：用10个1构造一个新的vector
+vector<int> cpy(v3); //构造3：拷贝v3构造到cpy中
+vector<char>v2(3,'a');//用3个‘a'
+printf("Size of v2 is %d \n",v2.size());
+for(int i=0;i<v2.size();i++)
+  printf("%c ",v2[i]);
+v2.clear();
+printf("\n Size of v2 is %d \n",v2.size());
+v2.push_back('A');
+v2.push_back('B');
+v2.push_back('C');
+v2.pop_back();//删去尾部元素
+v2.insert(v2.begin(),'D');//insert()位置必须由迭代器指定
+v2.insert(v2.begin()+2,'E');
+v2.insert(v2.begin(),2,'F');//头插2个’F'
+printf("Size of v2 is %d \n",v2.size());
+for(int i=0;i<v2.size();i++)
+	printf("%c ",v2[i]);
+printf("\n");
+printf("\n\n resize 之后：\n");
+v2.resize(2);//设置/修改有效元素个数size
+printf("Size of v2 is %d \n",v2.size());
+for(int i=0;i<v2.size();i++)
+	printf("%c ",v2[i]);
+printf("\n\n erase第一个元素之后：\n");
+v2.erase(v2.begin());
+for(int i=0;i<v2.size();i++)
+	printf("%c ",v2[i]);
+reverse(v2.begin()+3,v2.begin()+6);//将下标3~5所在元素逆序翻转
+//以下是两种遍历方式
+vector<int> data(10);
+for (int i = 0; i < data.size(); i++)
+  cout << data[i] << endl;  // 使用下标访问元素
+for (vector<int>::iterator iter = data.begin(); iter != data.end(); iter++)
+  cout << *iter << endl;  // 使用迭代器访问元素
+// 在C++11后可以使用 auto iter = data.begin() 来简化上述代码。noi系列竞赛使用C++98，不支持C++ 11
+2_ queue 队列 / priority_queue 优先队列
+（1）队列：先进先出表 复杂度O(1)
+front() //返回第一个
+back() // 返回最后一个
+push() //入队列
+pop() //弹出一个
+（2）优先队列：元素有序排列的队列。默认队列头部的元素优先级最高。因为它是一个队列，所以只能访问第一个元素。时间复杂度是O(logN)
+top()    //取出堆顶元素(优先队列是用堆（heap）实现的)
+push()    //加入一个元素
+pop()    //弹出一个元素
+（3）示例比较
+queue<int>q;
+priority_queue<int>pd;
+int v[6]={2,5,1,3,6,4};
+	
+for(int i=0;i<6;i++){
+	q.push(v[i]);
+	pd.push(v[i]); 
+}
+printf("queue:\n");
+while(q.size()){
+	printf("%d ",q.front());
+	q.pop();
+}
+printf("\nPriority_queue:\n");
+while(pd.size()){
+	printf("%d ",pd.top());//默认从大到小
+	pd.pop();
+}
+（4）优先队列如何从小到大排序
+priority_queue<int, vector<int>,greater<int> >pd;
+    // 三个参数：存放元素的类型，
+    //           用什么存，默认vector
+    //           按什么操作函数排序（默认less）
+3_deque 双向队列
+提供首尾的线性复杂度的插入和删除，以及常熟复杂度的随机访问（类比为双向的vector）。
+迭代器函数与vector相同
+与vector相比，额外有向队列头部增加元素的函数 push_front()和pop_front()
+// 1. 定义一个int类型的空双端队列 v0
+deque<int> v0;
+// 2. 定义一个int类型的双端队列 v1，并设置初始大小为10; 线性复杂度
+deque<int> v1(10);
+// 3. 定义一个int类型的双端队列 v2，并初始化为10个1; 线性复杂度
+deque<int> v2(10, 1);
+// 4. 复制已有的双端队列 v1; 线性复杂度
+deque<int> v3(v1);
+// 5. 创建一个v2的拷贝deque v4，其内容是v4[0]至v4[2]; 线性复杂度
+deque<int> v4(v2.begin(), v2.begin() + 3);
+// 6. 移动v2到新创建的deque v5，不发生拷贝; 常数复杂度; 需要 C++11
+deque<int> v5(std::move(v2));
+v1.at(3); //返回3的引用，执行越界检查，常熟复杂度
+//operator[] 返回容器中指定元素的引用，不执行越界检查
+deque<int>::iterator it;
+it = v1.front(); // 返回首元素的引用
+it = v1.back(); // 返回末尾元素的引用
+4_list 链表
+5_set 集合/multiset 可重复集合
+（1）set要点
+元素默认从小到大排序，第一个是最小的,且没有重复元素
+每次访问都是O(log N)
+遍历需要用迭代器，效率较序列容器低
+其实现方法是树，不能用[]访问
+所以内容是不可修改的
+关联容器不可用算法库函数如lower_bound()，而其自带同名成员函数：Myset.lower_bound(x) 返回一个迭代器，若找不到返回end()迭代器
+（2）set示例
+set<int>myset;
+myset.insert(3); //myset: {3}
+myset.insert(3); //myset: {3}
+myset.insert(1); //myset: {1,3}
+myset.insert(7); //myset: {1,3,7} 
+set<int>::iterator it;   //声明一个迭代器 
+it=myset.find(3); //此时it是指向3的迭代器 
+printf("%d %d\n",it,*it);
+//myset.count(3);返回myset中3这个元素的个数（0或1）
+myset.erase(7); //myset: {1,3}
+for(it=myset.begin();it!=myset.end();it++){
+	printf("%d ",*it);
+}
+（3）用set放结构体时
+由于放入set中的元素是自动排序的，当放入结构体类型时，需要重载’<‘运算符’。
+struct stu{
+    int id,score;
+    //重载小于运算符
+    bool operator<(const stu &s) const{
+        if(score != s.score) return score>s.score;
+        return id < s.id;//写法逻辑同结构体多关键字排序
+    }
+}
+set<stu>ms;                                       
+int main(){
+    stu nm;//使用示例
+    cin>>nm.id>>num.score;
+    ms.insert(nm);
+    
+    set<stu>::iterator it;
+    for(it=ms.begin(); it!=ms.end();it++){
+        cout>>(*it).id>> (*it).score<<endl;
+    }
+}                                         
+（4）multiset要点
+允许相同元素
+myset.erase(3) 删除所有的3
+若想只删除一个，需要通过迭代器删除
+myset.erase( myset.lower_bound(3) );
+6_map 映射
+（1）map要点
+每个节点都是一个pair，成员变量为first,second分别对应key,value
+按key从小到排序
+每个key对应一个value
+每次访问的复杂度是o(logN)
+访问一个不存在的key时，会自动新建一个value为0的节点
+key不可修改，可以修改value
+可以用［］访问
+键值对，可以将两个类型的数据联系起来
+如果key对一个value不够，可以使其对应一个结构体
+每次操作都要o(logN)，时间耗费大，如果不需要排序，可以用unordered map
+erase操作可以通过key，也可以通过迭代器
+关于pair的构造方法
+pair<int,int>(1,2);
+make_pair<1,2>
+（2）示例
+map<string,int>m;
+m["Sunday"]=1;
+m["Monday"]=2;
+//m.insert( pair<string,int>("Sunday",1));
+//m.insert( make_pair("Monday",2) );
+cout<<m.at("Monday")<<endl; // 输出2
+	//成员函数 at() 返回key对应的value
+	//at()会检查是否越界
+	// 如果不存在key，则抛出out_of_range异常
+cout<<m[""]<<endl;
+	//没有越界检查 
+	//不存在key "",则会自动创建一个value为0的节点 
+	// 这是map的size+1了 
+cout<<m["Monday"]<<endl;//输出2
+map<string,int>::iterator it;
+it=m.find("Sunday");
+cout<< it->first <<" "<< it->second <<endl;//it->first :输出key值
+                                            //it->second : 输出value值
+m.erase(it);
+//m.erase("Sunday");
+（3）multimap 支持多个相同的key（了解即可）
+multimap<char,int>m;
+（4）unordered map 无序的map（了解即可）
+通过哈希表实现
+访问效率 O(1)
+另附上两个网站
+https://oi-wiki.org/lang/csl/container/
+http://www.cplusplus.com/reference/stl/

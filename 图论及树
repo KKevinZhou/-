@@ -199,3 +199,27 @@ void dij(int v){
 				dis[j]=dis[k]+g[k][j];//修正最短路径
 	}
 }
+BF算法
+在更一般的情况下解决单源点最短路径问题。所谓一般情况，指的是有向图的边权可以为负,但不允许存在负权回路。
+BF算法具有分辨负权回路的能力。
+主要思路：利用贪心的思想，
+//① 存边
+struct node{ //用结构体来存每一条边 
+	int a,b,w;//a和b表示这条边的端点，w表示权值 
+}edge[N];
+
+	for(int i=1;i<=m;i++){
+		cin>>d>>e>>f;
+		edge[i]={d,e,f};
+		//等同于 edge[i].a=d, edge[i].b=e, edge[i].w=f;
+	}
+
+//②初始化
+	memset(dis,Mx,sizeof dis);//初始化所有点距离源点的距离为最大值 
+	dis[1]=0;//初始化源点 
+
+//③ BF 算法的核心
+for(int i=1;i<n;i++) //迭代n-1次 
+		for(int j=1;j<=m;j++) //每次迭代都枚举所有的边 
+			if(dis[edge[j].a] + edge[j].w < dis[edge[j].b])//找到可以松弛的边 
+				dis[edge[j].b] = dis[edge[j].a] + edge[j].w;//更新这条路径 

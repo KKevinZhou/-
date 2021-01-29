@@ -8,3 +8,6 @@ update 2021.1.27
 
 update 2021.1.28
 补充最短路:BF,SPFA,Dijkstra,floyd
+
+update 2021.1.29
+更新了并查集

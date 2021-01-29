@@ -10,4 +10,4 @@ update 2021.1.28
 补充最短路:BF,SPFA,Dijkstra,floyd
 
 update 2021.1.29
-更新了并查集
+更新了并查集、最小生成树

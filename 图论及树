@@ -262,3 +262,50 @@ while(q.size()){
         }
     }		
 }
+并查集
+基本思想
+判断元素间是否有联系，只要判断这两个元素是否属于同一个集合；
+而给出元素间的联系，建立这种联系，则只需合并两个元素各自所属的集合
+数据结构实现方法：一般采用数组来实现
+基本操作
+并查集的实现一般需要有如下操作：
+Make(x) : 建立一个新的集合，其仅有的成员是x，且x没有在其他集合中出现过；
+Union(x,y) : 将包含x和y 的动态集合合并为一个新的集合。
+Find(x) : 返回一个指向包含x的集合的代表
+int father[Mx];
+int find(int x){// 寻找x所在集合的代表，非递归方法实现
+    while ( father[x] != x) x = father[x];
+    return x;
+}
+int find(int x){ //递归的方法来实现
+    if(x != father[x]) return find(father[x]);
+    return x;
+}
+void unnion(int r1, int r2){
+    father[r1] = r2; //建立联系
+    //或者 father[r2] = r1;
+}
+//缺点：当一条单链极长时，数据的这个“并” 和 “查” 相当费时
+优化方法—路径压缩
+让每一个元素直接指向根节点，那么查找的复杂度几乎为常数；
+//① 初始化
+for(int i=1; i<=n; i++) father[i] = i;
+//每个元素属于一个单独的结合，所以每个元素以自己作为根节点
+//② 寻找根节点，并压缩路径
+int find(int x){
+    if (father[x] != x) father[x] = find( father[x]);//路径压缩核心
+    return father[x];
+}
+//③ 合并两个集合
+void union(int x, int y){
+    x = find(x);
+    y = find(y);
+    father[y] = x;
+}
+//④ 判断两个元素是否属于同一集合
+bool judge(int x, int y){
+    x = find(x);
+    y = find(y);
+    if(x == y) return true;
+    else return false;
+}
